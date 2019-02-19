@@ -1,0 +1,14 @@
+{
+	"editor.formatOnSave": true,
+	"prettier.eslintIntegration": true,
+	"cSpell.ignorePaths": [
+		"**/package.json",
+		"**/package-lock.json",
+		"**/node_modules/**",
+		"**/vscode-extension/**",
+		"**/.git/**",
+		".vscode",
+		"typings"
+	],
+	"cSpell.words": ["linebreak", "todos"]
+}
