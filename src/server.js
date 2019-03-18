@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 app.post('/tasks', (req, res) => {
 	const task = new Task({
-		text: req.body.text
+		description: req.body.description
 	});
 
 	task.save().then(

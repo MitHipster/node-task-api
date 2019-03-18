@@ -9,15 +9,15 @@ const Task = require('../../models/Task');
 const tasks = [
 	{
 		_id: new ObjectID(),
-		text: 'First task test'
+		task: 'First task test'
 	},
 	{
 		_id: new ObjectID(),
-		text: 'Second task test'
+		task: 'Second task test'
 	},
 	{
 		_id: new ObjectID(),
-		text: 'Third task test'
+		task: 'Third task test'
 	}
 ];
 
@@ -31,24 +31,24 @@ beforeEach(done => {
 
 describe('POST /tasks', () => {
 	it('should create a new task', done => {
-		const text = 'Test post route';
+		const task = 'Test post route';
 
 		request(app)
 			.post('/tasks')
-			.send({ text })
+			.send({ task })
 			.expect(200)
 			.expect(res => {
-				expect(res.body.text).toBe(text);
+				expect(res.body.task).toBe(task);
 			})
 			.end(err => {
 				if (err) {
 					return done(err);
 				}
 
-				Task.find({ text })
+				Task.find({ task })
 					.then(tasks => {
 						expect(tasks.length).toBe(1);
-						expect(tasks[0].text).toBe(text);
+						expect(tasks[0].task).toBe(task);
 						done();
 					})
 					.catch(err => done(err));
@@ -93,7 +93,7 @@ describe('GET /tasks/:id', () => {
 			.get(`/tasks/${tasks[1]._id.toHexString()}`)
 			.expect(200)
 			.expect(res => {
-				expect(res.body.task.text).toBe(tasks[1].text);
+				expect(res.body.task.task).toBe(tasks[1].task);
 			})
 			.end(done);
 	});

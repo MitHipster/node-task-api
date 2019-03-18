@@ -10,5 +10,9 @@
 		".vscode",
 		"typings"
 	],
-	"cSpell.words": ["linebreak", "minlength"]
+	"cSpell.words": [
+		"linebreak",
+		"maxlength",
+		"minlength"
+	]
 }
