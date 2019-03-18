@@ -10,5 +10,5 @@
 		".vscode",
 		"typings"
 	],
-	"cSpell.words": ["linebreak", "todos"]
+	"cSpell.words": ["linebreak", "minlength"]
 }

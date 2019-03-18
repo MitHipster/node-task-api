@@ -4,37 +4,37 @@ const request = require('supertest');
 const { ObjectID } = require('mongodb');
 
 const app = require('../server');
-const Todo = require('../../models/Todo');
+const Task = require('../../models/Task');
 
-const todos = [
+const tasks = [
 	{
 		_id: new ObjectID(),
-		text: 'First todo test'
+		text: 'First task test'
 	},
 	{
 		_id: new ObjectID(),
-		text: 'Second todo test'
+		text: 'Second task test'
 	},
 	{
 		_id: new ObjectID(),
-		text: 'Third todo test'
+		text: 'Third task test'
 	}
 ];
 
 beforeEach(done => {
-	Todo.remove({})
+	Task.remove({})
 		.then(() => {
-			return Todo.insertMany(todos);
+			return Task.insertMany(tasks);
 		})
 		.then(() => done());
 });
 
-describe('POST /todos', () => {
-	it('should create a new todo', done => {
+describe('POST /tasks', () => {
+	it('should create a new task', done => {
 		const text = 'Test post route';
 
 		request(app)
-			.post('/todos')
+			.post('/tasks')
 			.send({ text })
 			.expect(200)
 			.expect(res => {
@@ -45,19 +45,19 @@ describe('POST /todos', () => {
 					return done(err);
 				}
 
-				Todo.find({ text })
-					.then(todos => {
-						expect(todos.length).toBe(1);
-						expect(todos[0].text).toBe(text);
+				Task.find({ text })
+					.then(tasks => {
+						expect(tasks.length).toBe(1);
+						expect(tasks[0].text).toBe(text);
 						done();
 					})
 					.catch(err => done(err));
 			});
 	});
 
-	it('should not create todo with invalid data', done => {
+	it('should not create task with invalid data', done => {
 		request(app)
-			.post('/todos')
+			.post('/tasks')
 			.send({})
 			.expect(400)
 			.end(err => {
@@ -65,9 +65,9 @@ describe('POST /todos', () => {
 					return done(err);
 				}
 
-				Todo.find()
-					.then(todos => {
-						expect(todos.length).toBe(3);
+				Task.find()
+					.then(tasks => {
+						expect(tasks.length).toBe(3);
 						done();
 					})
 					.catch(err => done(err));
@@ -75,39 +75,39 @@ describe('POST /todos', () => {
 	});
 });
 
-describe('GET /todos', () => {
-	it('should get all todos', done => {
+describe('GET /tasks', () => {
+	it('should get all tasks', done => {
 		request(app)
-			.get('/todos')
+			.get('/tasks')
 			.expect(200)
 			.expect(res => {
-				expect(res.body.todos.length).toBe(3);
+				expect(res.body.tasks.length).toBe(3);
 			})
 			.end(done);
 	});
 });
 
-describe('GET /todos/:id', () => {
-	it('should return todo document', done => {
+describe('GET /tasks/:id', () => {
+	it('should return task document', done => {
 		request(app)
-			.get(`/todos/${todos[1]._id.toHexString()}`)
+			.get(`/tasks/${tasks[1]._id.toHexString()}`)
 			.expect(200)
 			.expect(res => {
-				expect(res.body.todo.text).toBe(todos[1].text);
+				expect(res.body.task.text).toBe(tasks[1].text);
 			})
 			.end(done);
 	});
 
-	it('should return 404 if todo not found', done => {
+	it('should return 404 if task not found', done => {
 		request(app)
-			.get(`/todos/${new ObjectID().toHexString()}`)
+			.get(`/tasks/${new ObjectID().toHexString()}`)
 			.expect(404)
 			.end(done);
 	});
 
 	it('should return 404 if Id is invalid', done => {
 		request(app)
-			.get('/todos/12345')
+			.get('/tasks/12345')
 			.expect(404)
 			.end(done);
 	});
