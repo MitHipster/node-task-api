@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
-const Todo = mongoose.model('Todo', {
-	text: {
+const Task = mongoose.model('Task', {
+	description: {
 		type: String,
 		required: true,
 		minlength: 1,
@@ -18,4 +18,4 @@ const Todo = mongoose.model('Todo', {
 	}
 });
 
-module.exports = Todo;
+module.exports = Task;
