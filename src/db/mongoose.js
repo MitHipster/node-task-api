@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/TodoApp', {
-	useNewUrlParser: true
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/task-manager-api', {
+	useNewUrlParser: true,
+	useCreateIndex: true
 });
 
 module.exports = mongoose;
