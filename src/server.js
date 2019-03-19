@@ -3,13 +3,30 @@ const bodyParser = require('body-parser');
 const { ObjectId } = require('mongodb');
 
 const mongoose = require('./db/mongoose');
+const User = require('../models/User');
 const Task = require('../models/Task');
-// const User = require('../models/User');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+
+app.post('/user', (req, res) => {
+	const user = new User({
+		name: req.body.name,
+		email: req.body.email,
+		password: req.body.password
+	});
+
+	user.save().then(
+		doc => {
+			res.send(doc);
+		},
+		err => {
+			res.status(400).send(err);
+		}
+	);
+});
 
 app.post('/tasks', (req, res) => {
 	const task = new Task({
