@@ -1,5 +1,4 @@
 const express = require('express');
-const { ObjectId } = require('mongodb');
 
 require('./db/mongoose');
 const User = require('../models/User');
@@ -34,10 +33,7 @@ app.get('/users', (req, res) => {
 });
 
 app.get('/users/:id', (req, res) => {
-	const id = req.params.id;
-	if (!ObjectId.isValid(id)) return res.status(404).send();
-
-	User.findById(id)
+	User.findById(req.params.id)
 		.then(user => {
 			if (!user) {
 				return res.status(404).send();
@@ -63,10 +59,7 @@ app.post('/tasks', (req, res) => {
 });
 
 app.get('/tasks/:id', (req, res) => {
-	const id = req.params.id;
-	if (!ObjectId.isValid(id)) return res.status(404).send();
-
-	Task.findById(id)
+	Task.findById(req.params.id)
 		.then(task => {
 			if (task) {
 				res.status(200).send({ task });
