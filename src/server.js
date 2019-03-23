@@ -11,11 +11,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.post('/users', (req, res) => {
-	const user = new User({
-		name: req.body.name,
-		email: req.body.email,
-		password: req.body.password
-	});
+	const user = new User(req.body);
 
 	user.save().then(
 		doc => {
@@ -28,9 +24,7 @@ app.post('/users', (req, res) => {
 });
 
 app.post('/tasks', (req, res) => {
-	const task = new Task({
-		description: req.body.description
-	});
+	const task = new Task(req.body);
 
 	task.save().then(
 		doc => {
