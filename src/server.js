@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const { ObjectId } = require('mongodb');
 
 const mongoose = require('./db/mongoose');
@@ -9,7 +8,7 @@ const Task = require('../models/Task');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.post('/user', (req, res) => {
 	const user = new User({
