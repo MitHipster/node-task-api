@@ -1,7 +1,7 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 
-const mongoose = require('./db/mongoose');
+require('./db/mongoose');
 const User = require('../models/User');
 const Task = require('../models/Task');
 
@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.post('/user', (req, res) => {
+app.post('/users', (req, res) => {
 	const user = new User({
 		name: req.body.name,
 		email: req.body.email,
