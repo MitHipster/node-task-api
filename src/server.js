@@ -10,9 +10,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.post('/users', (req, res) => {
-	const user = new User(req.body);
-
-	user.save().then(
+	User.create(req.body).then(
 		doc => {
 			res.status(201).send(doc);
 		},
@@ -46,9 +44,7 @@ app.get('/users/:id', (req, res) => {
 });
 
 app.post('/tasks', (req, res) => {
-	const task = new Task(req.body);
-
-	task.save().then(
+	Task.create(req.body).then(
 		doc => {
 			res.status(201).send(doc);
 		},
