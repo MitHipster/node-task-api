@@ -15,7 +15,7 @@ app.post('/users', (req, res) => {
 
 	user.save().then(
 		doc => {
-			res.send(doc);
+			res.status(201).send(doc);
 		},
 		err => {
 			res.status(400).send(err);
@@ -28,7 +28,7 @@ app.post('/tasks', (req, res) => {
 
 	task.save().then(
 		doc => {
-			res.send(doc);
+			res.status(201).send(doc);
 		},
 		err => {
 			res.status(400).send(err);
