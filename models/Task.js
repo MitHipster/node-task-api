@@ -4,8 +4,7 @@ const Task = mongoose.model('Task', {
 	description: {
 		type: String,
 		required: true,
-		minlength: 1,
-		maxlength: 100,
+		maxlength: 200,
 		trim: true
 	},
 	completed: {
