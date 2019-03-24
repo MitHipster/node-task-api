@@ -10,14 +10,13 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.post('/users', (req, res) => {
-	User.create(req.body).then(
-		doc => {
-			res.status(201).send(doc);
-		},
-		err => {
+	User.create(req.body)
+		.then(user => {
+			res.status(201).send(user);
+		})
+		.catch(err => {
 			res.status(400).send(err);
-		}
-	);
+		});
 });
 
 app.get('/users', (req, res) => {
@@ -44,40 +43,36 @@ app.get('/users/:id', (req, res) => {
 });
 
 app.post('/tasks', (req, res) => {
-	Task.create(req.body).then(
-		doc => {
-			res.status(201).send(doc);
-		},
-		err => {
+	Task.create(req.body)
+		.then(user => {
+			res.status(201).send(user);
+		})
+		.catch(err => {
 			res.status(400).send(err);
-		}
-	);
+		});
+});
+
+app.get('/tasks', (req, res) => {
+	Task.find()
+		.then(tasks => {
+			res.status(200).send(tasks);
+		})
+		.catch(err => {
+			res.status(500).send(err);
+		});
 });
 
 app.get('/tasks/:id', (req, res) => {
 	Task.findById(req.params.id)
 		.then(task => {
-			if (task) {
-				res.status(200).send({ task });
-			} else {
-				res.status(404).send();
+			if (!task) {
+				return res.status(404).send();
 			}
+			res.status(200).send(task);
 		})
 		.catch(() => {
-			res.status(400).send();
+			res.status(500).send();
 		});
-});
-
-app.get('/tasks', (req, res) => {
-	Task.find().then(
-		tasks => {
-			// Places array in wrapper object label tasks
-			res.send({ tasks });
-		},
-		err => {
-			res.status(400).send(err);
-		}
-	);
 });
 
 app.listen(port, () => {
