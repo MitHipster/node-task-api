@@ -70,8 +70,8 @@ app.get('/tasks/:id', (req, res) => {
 			}
 			res.status(200).send(task);
 		})
-		.catch(() => {
-			res.status(500).send();
+		.catch(err => {
+			res.status(500).send(err);
 		});
 });
 
