@@ -95,6 +95,32 @@ app.get('/tasks/:id', async (req, res) => {
 	}
 });
 
+app.patch('/tasks/:id', async (req, res) => {
+	const updates = Object.keys(req.body);
+	const allowedUpdates = ['description', 'completed'];
+	// Check to see if key is a valid property of the Task model
+	const isValidOperation = updates.every(update => allowedUpdates.includes(update));
+
+	if (!isValidOperation) {
+		return res.status(400).send({ error: 'Attempted to update an invalid field' });
+	}
+
+	try {
+		const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+			new: true,
+			runValidators: true
+		});
+
+		if (!task) {
+			return res.status(404).send();
+		}
+
+		res.status(200).send(task);
+	} catch (error) {
+		res.status(400).send(error);
+	}
+});
+
 app.listen(port, () => {
 	console.info(`Started on port ${port}`);
 });
