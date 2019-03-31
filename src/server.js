@@ -1,81 +1,15 @@
 const express = require('express');
 
 require('./db/mongoose');
-const User = require('../models/User');
 const Task = require('../models/Task');
+const userRouter = require('./routers/user');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.post('/users', async (req, res) => {
-	try {
-		const user = await User.create(req.body);
-		res.status(201).send(user);
-	} catch (error) {
-		res.status(400).send(error);
-	}
-});
-
-app.get('/users', async (req, res) => {
-	try {
-		const users = await User.find();
-		res.status(200).send(users);
-	} catch (error) {
-		res.status(500).send(error);
-	}
-});
-
-app.get('/users/:id', async (req, res) => {
-	try {
-		const user = await User.findById(req.params.id);
-		if (!user) {
-			return res.status(404).send();
-		}
-		res.status(200).send(user);
-	} catch (error) {
-		res.status(500).send(error);
-	}
-});
-
-app.patch('/users/:id', async (req, res) => {
-	const updates = Object.keys(req.body);
-	const allowedUpdates = ['name', 'email', 'password'];
-	// Check to see if key is a valid property of the User model
-	const isValidOperation = updates.every(update => allowedUpdates.includes(update));
-
-	if (!isValidOperation) {
-		return res.status(400).send({ error: 'Attempted to update an invalid field' });
-	}
-
-	try {
-		const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-			new: true,
-			runValidators: true
-		});
-
-		if (!user) {
-			return res.status(404).send();
-		}
-
-		res.status(200).send(user);
-	} catch (error) {
-		res.status(400).send(error);
-	}
-});
-
-app.delete('/users/:id', async (req, res) => {
-	try {
-		const user = await User.findByIdAndDelete(req.params.id);
-		if (!user) {
-			return res.status(404).send();
-		}
-		res.status(200).send(user);
-	} catch (error) {
-		res.status(500).send(error);
-	}
-});
+app.use(userRouter);
 
 app.post('/tasks', async (req, res) => {
 	try {
