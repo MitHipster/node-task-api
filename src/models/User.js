@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
-const User = mongoose.model('User', {
+const userSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
@@ -32,5 +33,20 @@ const User = mongoose.model('User', {
 		}
 	}
 });
+
+// Second argument needs to be a standard function rather then an arrow function
+userSchema.pre('save', async function(next) {
+	// this refers to the user document
+	const user = this;
+
+	if (user.isModified('password')) {
+		user.password = await bcrypt.hash(user.password, 8);
+	}
+
+	// Call next to proceed in the process
+	next();
+});
+
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
