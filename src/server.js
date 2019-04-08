@@ -16,18 +16,4 @@ app.listen(port, () => {
 	console.info(`Started on port ${port}`);
 });
 
-const bcrypt = require('bcryptjs');
-
-const myFunction = async () => {
-	const password = 'Red12345!';
-	const hashed = await bcrypt.hash(password, 8);
-
-	console.info(password, hashed);
-
-	const isMatch = await bcrypt.compare(password, hashed);
-	console.log('==>: myFunction -> isMatch', isMatch);
-};
-
-myFunction();
-
 module.exports = app;
