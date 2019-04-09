@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
 	name: {
@@ -32,10 +33,18 @@ const userSchema = new mongoose.Schema({
 				throw new Error('Your password cannot contain "password".');
 			}
 		}
-	}
+	},
+	tokens: [
+		{
+			token: {
+				type: String,
+				required: true
+			}
+		}
+	]
 });
 
-// Creates a custom function and adds it to the user schema
+// Creates a custom function and adds it to the user schema - this is a method on the model
 userSchema.statics.findByCredentials = async (email, password) => {
 	const user = await User.findOne({ email });
 
@@ -50,6 +59,18 @@ userSchema.statics.findByCredentials = async (email, password) => {
 	}
 
 	return user;
+};
+
+// Generates a token for the authenticated user and saves to the user document - this is a method on the instance
+userSchema.methods.generateAuthToken = async function() {
+	const user = this;
+	// Need to convert the user object to a string
+	const token = jwt.sign({ _id: user._id.toString() }, 'pandabreakfastmountainsocks');
+
+	user.tokens = user.tokens.concat({ token });
+	await user.save();
+
+	return token;
 };
 
 // Second argument needs to be a standard function rather then an arrow function

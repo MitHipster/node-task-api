@@ -6,7 +6,9 @@ const User = require('../models/User');
 router.post('/users', async (req, res) => {
 	try {
 		const user = await User.create(req.body);
-		res.status(201).send(user);
+		// Generate a token on the user instance
+		const token = await user.generateAuthToken();
+		res.status(201).send({ user, token });
 	} catch (error) {
 		res.status(400).send(error);
 	}
@@ -16,7 +18,9 @@ router.post('/users/login', async (req, res) => {
 	try {
 		// Call a custom method to find a matching user by email and password
 		const user = await User.findByCredentials(req.body.email, req.body.password);
-		res.status(200).send(user);
+		// Generate a token on the user instance
+		const token = await user.generateAuthToken();
+		res.status(200).send({ user, token });
 	} catch (error) {
 		res.status(400).send({ error: error.message });
 	}
