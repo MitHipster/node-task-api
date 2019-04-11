@@ -73,6 +73,21 @@ userSchema.methods.generateAuthToken = async function() {
 	return token;
 };
 
+/**
+ * Sanitizes the user object by removing private information before returning to the frontend.
+ * NOTE: This method is NOT called directly. Instead it is called automatically before express
+ * converts the object to a string prior to sending.
+ */
+userSchema.methods.toJSON = function() {
+	const user = this;
+	const userObject = user.toObject();
+
+	delete userObject.password;
+	delete userObject.tokens;
+
+	return userObject;
+};
+
 // Second argument needs to be a standard function rather then an arrow function
 userSchema.pre('save', async function(next) {
 	// this refers to the user document
