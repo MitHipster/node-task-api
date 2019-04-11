@@ -60,7 +60,7 @@ router.get('/users/me', auth, async (req, res) => {
 	res.status(200).send(req.user);
 });
 
-router.patch('/users/:id', async (req, res) => {
+router.patch('/users/me', auth, async (req, res) => {
 	const updates = Object.keys(req.body);
 	const allowedUpdates = ['name', 'email', 'password'];
 	// Check to see if key is a valid property of the User model
@@ -71,28 +71,21 @@ router.patch('/users/:id', async (req, res) => {
 	}
 
 	try {
-		const user = await User.findById(req.params.id);
+		updates.forEach(update => (req.user[update] = req.body[update]));
+		await req.user.save();
 
-		updates.forEach(update => (user[update] = req.body[update]));
-		await user.save();
-
-		if (!user) {
-			return res.status(404).send();
-		}
-
-		res.status(200).send(user);
+		res.status(200).send(req.user);
 	} catch (error) {
 		res.status(400).send(error);
 	}
 });
 
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/me', auth, async (req, res) => {
 	try {
-		const user = await User.findByIdAndDelete(req.params.id);
-		if (!user) {
-			return res.status(404).send();
-		}
-		res.status(200).send(user);
+		// Removes user using built in mongoose method
+		await req.user.remove();
+
+		res.status(200).send(req.user);
 	} catch (error) {
 		res.status(500).send(error);
 	}
