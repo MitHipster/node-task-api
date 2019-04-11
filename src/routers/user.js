@@ -27,6 +27,35 @@ router.post('/users/login', async (req, res) => {
 	}
 });
 
+router.post('/users/logout', auth, async (req, res) => {
+	try {
+		// Update user tokens by filtering out the active token
+		req.user.tokens = req.user.tokens.filter(token => {
+			return token.token !== req.token;
+		});
+		// Update user object with filtered token array
+		await req.user.save();
+
+		res.status(200).send();
+	} catch (error) {
+		res.status(500).send();
+	}
+});
+
+// Route to remove all login tokens, closing out all sessions
+router.post('/users/logout/all', auth, async (req, res) => {
+	try {
+		// Zero out users token array
+		req.user.tokens = [];
+		// Update user object with empty token array
+		await req.user.save();
+
+		res.status(200).send();
+	} catch (error) {
+		res.status(500).send();
+	}
+});
+
 router.get('/users/me', auth, async (req, res) => {
 	res.status(200).send(req.user);
 });

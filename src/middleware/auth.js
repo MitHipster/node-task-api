@@ -15,6 +15,7 @@ const auth = async (req, res, next) => {
 		}
 
 		// If user found, add user object to req object for any subsequent API requests
+		req.token = token;
 		req.user = user;
 		next();
 	} catch (error) {
