@@ -3,6 +3,8 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const Task = require('./Task');
+
 const userSchema = new mongoose.Schema({
 	name: {
 		type: String,
@@ -106,6 +108,15 @@ userSchema.pre('save', async function(next) {
 	}
 
 	// Call next to proceed in the process
+	next();
+});
+
+// Cascade delete all user tasks when account is deleted
+userSchema.pre('remove', async function(next) {
+	const user = this;
+
+	await Task.deleteMany({ owner: user._id });
+
 	next();
 });
 
