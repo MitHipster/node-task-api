@@ -44,6 +44,14 @@ const userSchema = new mongoose.Schema({
 	]
 });
 
+// Virtual field for referencing tasks. The properties localField and foreignField establish
+// the join between the 2 collections
+userSchema.virtual('tasks', {
+	ref: 'Task',
+	localField: '_id',
+	foreignField: 'owner'
+});
+
 // Creates a custom function and adds it to the user schema - this is a method on the model
 userSchema.statics.findByCredentials = async (email, password) => {
 	const user = await User.findOne({ email });
