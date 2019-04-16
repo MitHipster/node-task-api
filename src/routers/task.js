@@ -20,18 +20,24 @@ router.post('/tasks', auth, async (req, res) => {
 });
 
 router.get('/tasks', auth, async (req, res) => {
+	const match = {};
+
+	if (req.query.completed) {
+		// Need to convert provided string to a boolean
+		match.completed = req.query.completed === 'true';
+	}
+
 	try {
-		/* Alternative approach using populate method
-		First, populate tasks object on user */
-		// await req.user.populate('tasks').execPopulate();
-		/* Then send back object */
-		// res.status(200).send(req.user.tasks);
+		// Populate tasks object on user
+		await req.user
+			.populate({
+				path: 'tasks',
+				match
+			})
+			.execPopulate();
 
-		const tasks = await Task.find({
-			owner: req.user._id
-		});
-
-		res.status(200).send(tasks);
+		// Send back tasks off user object
+		res.status(200).send(req.user.tasks);
 	} catch (error) {
 		res.status(500).send(error);
 	}
