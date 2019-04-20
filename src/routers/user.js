@@ -2,7 +2,7 @@ const express = require('express');
 const router = new express.Router();
 
 const auth = require('../middleware/auth');
-const avatar = require('../middleware/multer');
+const upload = require('../middleware/multer');
 const User = require('../models/User');
 
 router.post('/users', async (req, res) => {
@@ -92,7 +92,7 @@ router.delete('/users/me', auth, async (req, res) => {
 	}
 });
 
-router.post('/users/me/avatar', avatar.single('avatar'), (req, res) => {
+router.post('/users/me/avatar', upload.single('avatar'), (req, res) => {
 	res.send();
 });
 
