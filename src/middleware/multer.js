@@ -9,7 +9,7 @@ const upload = multer({
 		// Accept filenames that end in png, jpg or jpeg
 		if (!file.originalname.match(/\.(jpe?g|png)$/i)) {
 			// Passes an error to the callback function if upload fails
-			return cb(new Error('Please upload an image in jpg or png format'));
+			return cb(new Error('Please upload a jpg or png image'));
 		}
 
 		// Passes an undefined error and true on success

@@ -92,8 +92,16 @@ router.delete('/users/me', auth, async (req, res) => {
 	}
 });
 
-router.post('/users/me/avatar', upload.single('avatar'), (req, res) => {
-	res.send();
-});
+router.post(
+	'/users/me/avatar',
+	upload.single('avatar'),
+	(req, res) => {
+		res.send();
+	},
+	// eslint-disable-next-line no-unused-vars
+	(error, req, res, next) => {
+		res.status(400).send({ error: error.message });
+	}
+);
 
 module.exports = router;
