@@ -108,4 +108,14 @@ router.post(
 	}
 );
 
+router.patch('/users/me/avatar', auth, async (req, res) => {
+	try {
+		req.user.avatar = undefined;
+		await req.user.save();
+		res.status(200).send();
+	} catch (error) {
+		res.status(400).send(error);
+	}
+});
+
 module.exports = router;
