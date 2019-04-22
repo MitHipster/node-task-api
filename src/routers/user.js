@@ -1,5 +1,6 @@
 const express = require('express');
 const router = new express.Router();
+const sharp = require('sharp');
 
 const auth = require('../middleware/auth');
 const upload = require('../middleware/multer');
@@ -97,8 +98,14 @@ router.post(
 	auth,
 	upload.single('avatar'),
 	async (req, res) => {
+		// Use sharp utility to resize image and convert to png if necessary
+		const buffer = await sharp(req.file.buffer)
+			.resize({ width: 250, height: 250 })
+			.png()
+			.toBuffer();
+
 		// Store a buffer of the file in db instead of using dest option in multer to save file
-		req.user.avatar = req.file.buffer;
+		req.user.avatar = buffer;
 		await req.user.save();
 		res.send();
 	},
@@ -126,7 +133,7 @@ router.get('/users/:id/avatar', async (req, res) => {
 			return res.status(404).send({ error: 'Avatar image not found' });
 		}
 
-		res.set('Content-Type', 'image/jpg');
+		res.set('Content-Type', 'image/png');
 		res.send(user.avatar);
 	} catch (error) {
 		res.status(404).send(error);

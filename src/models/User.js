@@ -102,6 +102,8 @@ userSchema.methods.toJSON = function() {
 
 	delete userObject.password;
 	delete userObject.tokens;
+	// Removes the raw buffer data from the user object as image will be served from a URL
+	delete userObject.avatar;
 
 	return userObject;
 };
