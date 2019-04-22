@@ -94,8 +94,12 @@ router.delete('/users/me', auth, async (req, res) => {
 
 router.post(
 	'/users/me/avatar',
+	auth,
 	upload.single('avatar'),
-	(req, res) => {
+	async (req, res) => {
+		// Store a buffer of the file in db instead of using dest option in multer to save file
+		req.user.avatar = req.file.buffer;
+		await req.user.save();
 		res.send();
 	},
 	// eslint-disable-next-line no-unused-vars
