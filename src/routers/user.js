@@ -118,4 +118,19 @@ router.patch('/users/me/avatar', auth, async (req, res) => {
 	}
 });
 
+router.get('/users/:id/avatar', async (req, res) => {
+	try {
+		const user = await User.findById(req.params.id);
+
+		if (!user || !user.avatar) {
+			return res.status(404).send({ error: 'Avatar image not found' });
+		}
+
+		res.set('Content-Type', 'image/jpg');
+		res.send(user.avatar);
+	} catch (error) {
+		res.status(404).send(error);
+	}
+});
+
 module.exports = router;
