@@ -6,7 +6,7 @@ const auth = async (req, res, next) => {
 		// Get Bearer token from header and remove Bearer prefix
 		const token = req.header('Authorization').replace('Bearer ', '');
 		// Decode token using secret phrase
-		const decoded = jwt.verify(token, 'pandabreakfastmountainsocks');
+		const decoded = jwt.verify(token, process.env.JWT_SECRET);
 		// Find user with matching decoded id AND existing token in tokens array
 		const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
 
