@@ -4,11 +4,14 @@ const sharp = require('sharp');
 
 const auth = require('../middleware/auth');
 const upload = require('../middleware/multer');
+const { welcomeEmail, cancellationEmail } = require('../middleware/email');
 const User = require('../models/User');
 
 router.post('/users', async (req, res) => {
 	try {
 		const user = await User.create(req.body);
+		// Send a welcome email using SendGrid
+		welcomeEmail(user.email, user.name);
 		// Generate a token on the user instance
 		const token = await user.generateAuthToken();
 		res.status(201).send({ user, token });
@@ -86,6 +89,8 @@ router.delete('/users/me', auth, async (req, res) => {
 	try {
 		// Removes user using built in mongoose method
 		await req.user.remove();
+		// Send a goodbye email using SendGrid
+		cancellationEmail(req.user.email, req.user.name);
 
 		res.status(200).send(req.user);
 	} catch (error) {
