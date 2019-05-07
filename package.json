@@ -4,8 +4,8 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "node src/server.js",
-		"dev": "nodemon -r dotenv/config -e js src/server.js dotenv_config_path=./config/development/.env",
+		"start": "node src/index.js",
+		"dev": "nodemon -r dotenv/config -e js src/index.js dotenv_config_path=./config/development/.env",
 		"test": "jest --setupFiles dotenv/config --watch dotenv_config_path=./config/testing/.env"
 	},
 	"engines": {
