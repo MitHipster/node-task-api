@@ -1,8 +1,22 @@
 /* global test beforeEach */
 const request = require('supertest');
+const faker = require('faker');
 
 const app = require('../src/server');
 const User = require('../src/models/User');
+
+const users = {
+	new: {
+		name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+		email: faker.internet.email(),
+		password: faker.internet.password(8)
+	},
+	existing: {
+		name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+		email: faker.internet.email(),
+		password: faker.internet.password(8)
+	}
+};
 
 // Remove users from the database before testing
 beforeEach(async () => {
