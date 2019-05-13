@@ -123,3 +123,17 @@ test('Should not delete a user account', async () => {
 		.send()
 		.expect(401);
 });
+
+test('Should upload avatar image', async () => {
+	await request(app)
+		.post('/users/me/avatar')
+		.set('Authorization', `Bearer ${users.existing.tokens[0].token}`)
+		// Provide attach with field name and path to test file
+		.attach('avatar', 'tests/fixtures/profile-pic.jpg')
+		.expect(200);
+
+	// Assert that binary data was saved to database
+	const user = await User.findById(users.existing._id);
+	// toBe uses strict equality which will not work when comparing two like objects
+	expect(user.avatar).toEqual(expect.any(Buffer));
+});
