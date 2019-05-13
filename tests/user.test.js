@@ -1,4 +1,4 @@
-/* global test beforeEach */
+/* global test beforeEach expect */
 const request = require('supertest');
 const faker = require('faker');
 const jwt = require('jsonwebtoken');
@@ -46,18 +46,40 @@ beforeEach(async () => {
 });
 
 test('Should sign up a new user', async () => {
-	await request(app)
+	const response = await request(app)
 		.post('/users')
 		.send(users.new)
 		.expect(201);
+
+	// Assert that a user was added to database
+	const user = await User.findById(response.body.user._id);
+	expect(user).not.toBeNull();
+
+	// Assert that response object contains the correct user information
+	expect(response.body).toMatchObject({
+		user: {
+			name: users.new.name,
+			email: users.new.email.toLowerCase()
+		},
+		token: user.tokens[0].token
+	});
+
+	// Assert that password is not stored as plain text
+	expect(user.password).not.toBe(users.new.password);
 });
 
 test('Should login existing user', async () => {
 	const { email, password } = users.existing;
-	await request(app)
+	const response = await request(app)
 		.post('/users/login')
 		.send({ email, password })
 		.expect(200);
+
+	// Assert that token in response matches second token in array
+	// Note: First token was add to the user object in the test data
+	// the second token was added after login in
+	const user = await User.findById(users.existing._id);
+	expect(response.body.token).toBe(user.tokens[1].token);
 });
 
 test('Should not login non-existent user', async () => {
@@ -89,6 +111,10 @@ test('Should delete a user account', async () => {
 		.set('Authorization', `Bearer ${users.existing.tokens[0].token}`)
 		.send()
 		.expect(200);
+
+	// Assert that user object is not in the database
+	const user = await User.findById(users.existing._id);
+	expect(user).toBeNull();
 });
 
 test('Should not delete a user account', async () => {
