@@ -82,3 +82,18 @@ test('Should not get profile for user', async () => {
 		.send()
 		.expect(401);
 });
+
+test('Should delete a user account', async () => {
+	await request(app)
+		.delete('/users/me')
+		.set('Authorization', `Bearer ${users.existing.tokens[0].token}`)
+		.send()
+		.expect(200);
+});
+
+test('Should not delete a user account', async () => {
+	await request(app)
+		.delete('/users/me')
+		.send()
+		.expect(401);
+});
