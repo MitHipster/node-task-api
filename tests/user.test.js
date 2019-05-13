@@ -137,3 +137,28 @@ test('Should upload avatar image', async () => {
 	// toBe uses strict equality which will not work when comparing two like objects
 	expect(user.avatar).toEqual(expect.any(Buffer));
 });
+
+test('Should update valid user fields', async () => {
+	const name = `${faker.name.firstName()} ${faker.name.lastName()}`;
+	await request(app)
+		.patch('/users/me')
+		.send({
+			name
+		})
+		.set('Authorization', `Bearer ${users.existing.tokens[0].token}`)
+		.expect(200);
+
+	// Assert that database contains the changed name
+	const user = await User.findById(users.existing._id);
+	expect(user.name).toBe(name);
+});
+
+test('Should not update invalid user fields', async () => {
+	await request(app)
+		.patch('/users/me')
+		.set('Authorization', `Bearer ${users.existing.tokens[0].token}`)
+		.send({
+			location: faker.address.city()
+		})
+		.expect(400);
+});
