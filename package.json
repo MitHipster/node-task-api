@@ -4,13 +4,15 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "node src/server.js",
-		"dev": "nodemon -r dotenv/config -e js src/server.js dotenv_config_path=./config/.env",
-		"test": "mocha src/**/*.test.js",
-		"test-watch": "nodemon --exec 'npm test'"
+		"start": "node src/index.js",
+		"dev": "env-cmd -e development nodemon -e js src/index.js",
+		"test": "env-cmd -e testing jest --watch"
 	},
 	"engines": {
 		"node": "10.15.1"
+	},
+	"jest": {
+		"testEnvironment": "node"
 	},
 	"keywords": [],
 	"author": "",
@@ -26,10 +28,10 @@
 		"validator": "^10.11.0"
 	},
 	"devDependencies": {
-		"dotenv": "^7.0.0",
+		"env-cmd": "^9.0.1",
 		"eslint": "^5.13.0",
-		"expect": "^24.1.0",
-		"mocha": "^6.0.2",
+		"faker": "^4.1.0",
+		"jest": "^24.8.0",
 		"nodemon": "^1.18.10",
 		"supertest": "^3.4.2"
 	}
