@@ -28,6 +28,16 @@ test('Should create task for user', async () => {
 	expect(task.completed).toEqual(false);
 });
 
+test('Should not be able to add task without description', async () => {
+	await request(app)
+		.post('/tasks')
+		.set('Authorization', `Bearer ${users.existingTwo.tokens[0].token}`)
+		.send({
+			description: ''
+		})
+		.expect(400);
+});
+
 test('Should get all tasks for user', async () => {
 	const response = await request(app)
 		.get('/tasks')
