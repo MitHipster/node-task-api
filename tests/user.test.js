@@ -35,7 +35,7 @@ test('Should sign up a new user', async () => {
 });
 
 test('Should login existing user', async () => {
-	const { email, password } = users.existing;
+	const { email, password } = users.existingOne;
 	const response = await request(app)
 		.post('/users/login')
 		.send({ email, password })
@@ -44,7 +44,7 @@ test('Should login existing user', async () => {
 	// Assert that token in response matches second token in array
 	// Note: First token was add to the user object in the test data
 	// the second token was added after login in
-	const user = await User.findById(users.existing._id);
+	const user = await User.findById(users.existingOne._id);
 	expect(response.body.token).toBe(user.tokens[1].token);
 });
 
@@ -59,7 +59,7 @@ test('Should not login non-existent user', async () => {
 test('Should get profile for user', async () => {
 	await request(app)
 		.get('/users/me')
-		.set('Authorization', `Bearer ${users.existing.tokens[0].token}`)
+		.set('Authorization', `Bearer ${users.existingOne.tokens[0].token}`)
 		.send()
 		.expect(200);
 });
@@ -74,12 +74,12 @@ test('Should not get profile for user', async () => {
 test('Should delete a user account', async () => {
 	await request(app)
 		.delete('/users/me')
-		.set('Authorization', `Bearer ${users.existing.tokens[0].token}`)
+		.set('Authorization', `Bearer ${users.existingOne.tokens[0].token}`)
 		.send()
 		.expect(200);
 
 	// Assert that user object is not in the database
-	const user = await User.findById(users.existing._id);
+	const user = await User.findById(users.existingOne._id);
 	expect(user).toBeNull();
 });
 
@@ -93,13 +93,13 @@ test('Should not delete a user account', async () => {
 test('Should upload avatar image', async () => {
 	await request(app)
 		.post('/users/me/avatar')
-		.set('Authorization', `Bearer ${users.existing.tokens[0].token}`)
+		.set('Authorization', `Bearer ${users.existingOne.tokens[0].token}`)
 		// Provide attach with field name and path to test file
 		.attach('avatar', 'tests/fixtures/profile-pic.jpg')
 		.expect(200);
 
 	// Assert that binary data was saved to database
-	const user = await User.findById(users.existing._id);
+	const user = await User.findById(users.existingOne._id);
 	// toBe uses strict equality which will not work when comparing two like objects
 	expect(user.avatar).toEqual(expect.any(Buffer));
 });
@@ -111,18 +111,18 @@ test('Should update valid user fields', async () => {
 		.send({
 			name
 		})
-		.set('Authorization', `Bearer ${users.existing.tokens[0].token}`)
+		.set('Authorization', `Bearer ${users.existingOne.tokens[0].token}`)
 		.expect(200);
 
 	// Assert that database contains the changed name
-	const user = await User.findById(users.existing._id);
+	const user = await User.findById(users.existingOne._id);
 	expect(user.name).toBe(name);
 });
 
 test('Should not update invalid user fields', async () => {
 	await request(app)
 		.patch('/users/me')
-		.set('Authorization', `Bearer ${users.existing.tokens[0].token}`)
+		.set('Authorization', `Bearer ${users.existingOne.tokens[0].token}`)
 		.send({
 			location: faker.address.city()
 		})
