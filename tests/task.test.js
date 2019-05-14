@@ -39,6 +39,18 @@ test('Should get all tasks for user', async () => {
 	expect(response.body.length).toBe(3);
 });
 
+test('Should be able to delete a task', async () => {
+	await request(app)
+		.delete(`/tasks/${tasks.existingOne.taskTwo._id}`)
+		.set('Authorization', `Bearer ${users.existingOne.tokens[0].token}`)
+		.send()
+		.expect(200);
+
+	// Assert that task is removed from database
+	const task = await Task.findById(tasks.existingOne.taskTwo._id);
+	expect(task).toBeNull();
+});
+
 test('Should not delete another users tasks', async () => {
 	await request(app)
 		.delete(`/tasks/${tasks.existingOne.taskTwo._id}`)
