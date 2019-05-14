@@ -38,3 +38,15 @@ test('Should get all tasks for user', async () => {
 	// Assert the correct number of tasks received
 	expect(response.body.length).toBe(3);
 });
+
+test('Should not delete another users tasks', async () => {
+	await request(app)
+		.delete(`/tasks/${tasks.existingOne.taskTwo._id}`)
+		.set('Authorization', `Bearer ${users.existingTwo.tokens[0].token}`)
+		.send()
+		.expect(404);
+
+	// Assert that task is still in database
+	const task = await Task.findById(tasks.existingOne.taskTwo._id);
+	expect(task).not.toBeNull();
+});
