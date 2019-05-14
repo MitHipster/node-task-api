@@ -38,6 +38,18 @@ test('Should not be able to add task without description', async () => {
 		.expect(400);
 });
 
+test('Should return only incomplete tasks', async () => {
+	const response = await request(app)
+		.get('/tasks')
+		.query({ completed: false })
+		.set('Authorization', `Bearer ${users.existingTwo.tokens[0].token}`)
+		.send()
+		.expect(200);
+
+	// Assert the correct number of tasks received
+	expect(response.body.length).toBe(2);
+});
+
 test('Should get all tasks for user', async () => {
 	const response = await request(app)
 		.get('/tasks')

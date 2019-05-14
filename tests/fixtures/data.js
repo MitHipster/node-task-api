@@ -75,7 +75,7 @@ const tasks = {
 		taskThree: {
 			_id: new mongoose.Types.ObjectId(),
 			description: faker.lorem.words(rndNumber()),
-			completed: true,
+			completed: false,
 			owner: users.existingTwo._id
 		}
 	}
